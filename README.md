@@ -1,6 +1,6 @@
 # Simulation of flying objects
 
-This is an application created using JavascSipt and HTML. The application displays an object marked as a green circle moving across the map at 60 km/h in a line across the great-sircle
+This is an application created using JavaScript and HTML. The application displays an object marked as a green circle moving across the map at 60 km/h in a line across the great-sircle
 
 ## Starting the application
 
