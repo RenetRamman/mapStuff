@@ -21,20 +21,25 @@
     var startPoint = [58.0964553807096, 27.467336376884223];
     var endPoint = [0, 0];
 
-    var greatCircle = turf.greatCircle(startPoint, endPoint, {});
-    var greatCircleCoords = greatCircle.geometry.coordinates.map(coord => coord); // Leaflet uses [lat, lon] format
+    startPoint = startPoint.reverse()
+    endPoint = endPoint.reverse()
+
+    var greatCircle = turf.greatCircle(startPoint, endPoint, {}); // turf usees [lon, lat]
+    var greatCircleCoords = greatCircle.geometry.coordinates.map(coord => coord.reverse()); // Leaflet uses [lat, lon] format
 
     var circleMarker = L.circleMarker(greatCircleCoords[0], { color: 'red', radius: 10 }).addTo(map);
 
-    var circleMark = L.circleMarker(startPoint, { color: 'green', radius: 10 }).addTo(map);
+    var circleMark = L.circleMarker(greatCircleCoords[0], { color: 'green', radius: 10 }).addTo(map);
 
-    var animationSpeed = 1000; // Time in milliseconds
+    // Line for debuging
+    var greatCirclePolyline = L.polyline(greatCircleCoords, { color: 'red' }).addTo(map);
+
+    // circleMark.setLatLng(turf.along(greatCircle, 10, {units: "kilometers"})["geometry"]["coordinates"]);
+    // var distance = turf.distance(greatCircleCoords[0], turf.point([circleMark["_latlng"]["lat"], circleMark["_latlng"]["lng"]]), {units: 'kilometers'});
+    // console.log(distance)
+
+
     var lastTick = Date.now();
-    var totalSteps = greatCircleCoords.length;
-    console.log(totalSteps)
-    var currentStep = 0;
-
-    
 
     function updateMarkers() {
       var now = Date.now();
@@ -45,7 +50,7 @@
       // 47.47031713907729, -123.1832615271919
       // 39.890217436847, -75.6783794179053
       var oldCoordinates = circleMark.getLatLng()
-      var from = turf.point(startPoint);
+      var from = turf.point(greatCircleCoords[0]);
       var to = turf.point([circleMark["_latlng"]["lat"], circleMark["_latlng"]["lng"]]);
       var options = {units: 'kilometers'};
       
@@ -54,19 +59,9 @@
       
       console.log(distance)
     }
-    
-    function animateCircleMarker() {
-      if (currentStep < totalSteps) {
-        circleMarker.setLatLng(greatCircleCoords[currentStep]);
-        circleMark.setLatLng(turf.along(greatCircle, 10 * currentStep, {})["geometry"]["coordinates"])
-        currentStep++;
-        setTimeout(animateCircleMarker, animationSpeed / totalSteps);
-      }
-    }
+  
 
     setInterval(updateMarkers, 1000/24)
-    
-    // animateCircleMarker();
   </script>
 </body>
 </html>
