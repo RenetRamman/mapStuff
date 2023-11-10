@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://unpkg.com/@turf/turf@latest"></script>
+
+  <script src="processGeodata.js"></script>
 </head>
 <body>
   <div id="map" style="height: 720px;"></div>
@@ -19,7 +21,7 @@
     }).addTo(map);
 
     var startPoint = [58.0964553807096, 27.467336376884223];
-    var endPoint = [0, 0];
+    var endPoint = [44.08737209347981, -96.67365912666632];
 
     startPoint = startPoint.reverse()
     endPoint = endPoint.reverse()
@@ -34,7 +36,7 @@
     // Line for debuging
     var greatCirclePolyline = L.polyline(greatCircleCoords, { color: 'red' }).addTo(map);
 
-    // circleMark.setLatLng(turf.along(greatCircle, 10, {units: "kilometers"})["geometry"]["coordinates"]);
+    // circleMark.setLatLng(turf.along(greatCircle, 6000, {units: "kilometers"})["geometry"]["coordinates"]);
     // var distance = turf.distance(greatCircleCoords[0], turf.point([circleMark["_latlng"]["lat"], circleMark["_latlng"]["lng"]]), {units: 'kilometers'});
     // console.log(distance)
 
@@ -44,7 +46,7 @@
     function updateMarkers() {
       var now = Date.now();
       var deltaTime = (now - lastTick) / (1000 * 60 * 60);
-      console.log(deltaTime)
+      // console.log(deltaTime)
       lastTick = now
       // Distance
       // 47.47031713907729, -123.1832615271919
@@ -55,9 +57,12 @@
       var options = {units: 'kilometers'};
       
       var distance = turf.distance(from, to, options);
+      
+      // TODO: Create a class containing the marker and use local variable of the class object to store the distance
+      // instead of calculating it every frame using the turf.distance function as it is not accurate enough
       circleMark.setLatLng(turf.along(greatCircle, distance + 60 * deltaTime, {units: "kilometers"})["geometry"]["coordinates"]);
       
-      console.log(distance)
+      // console.log(distance)
     }
   
 
